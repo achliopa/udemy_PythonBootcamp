@@ -197,4 +197,82 @@ they support indexing slicing and nesting
 
 ### Lecture 26 - Sets in Python
 
-* 
+* sets are unordered collections of unique elements
+* it uses curly braces like dictionaries but without key value pairs.
+* how to create them `myset = set()` to add an element `myset.add(1)`
+* adding again same element does not throw error but is ignored,
+* if i have alist with duplicates and cast it into a set `set(mylist)` what i get back is a set of the unigue elements
+
+### Lecture 26 - Booleans in Python
+
+* in python True and False reserved words must be capitalized
+* b = None defines the val a s non value NoneType element
+
+### Lecture 28 - IO with basic Files in Python
+
+* in jupiter textbook i can create a file with 
+
+```
+%%writefile test.txt
+first line of text
+second line of text
+third line of text
+```
+
+* i can open a file with `myfile = open('test.txt')` it creates a stream.
+* if the file i try to access does not exist i get a FileNotFoundError Error 2
+* i can get this error if file is in other dir. i can check the dir in jupiter notebook with pwd
+* after opening the file we can read it with `myfile.read()`. it returns a string with what is the file. we see that the output contains pecial characters like \n. 
+* if y run the command again i get empty string. this is because this is a stream or buffer of data and the pointer is moving when we read. 
+* to set the pointer back to the start we use `myfile.seek(0)` and then i can read again. if i pass a value in read. i read a specified number of chars from the file
+* if instead of read() i use readlines() i get a list of strings , one per line. the string still contain special chars
+* up to now we ve worked with files that are in the same location as our script (python notebook). to open a file from an other directory in our file system we need to pass the complete filepath. we can see our current path with pwd (maybe we should check relative paths)
+* when i open a filestream with open() i have to close the stream when finishing `myfile.close()`
+* the new style of opening file streams is with the following syntax. whatever is in the indented space use the my_new_file stream. when i leave the indented commands the stream closes without us needing to manually close it. the params in the indented space are visible outside
+
+```
+with open('myfile.txt') as my_new_file:
+	contents = my_new_file.read()
+print(contents)
+```
+
+* up to now we were only reading from files. we will now write and overrite files
+* open command supports various arguments like mode (r=read, w=write etc). i can see in Python Jupiter notebook the docs for each method by Shift+Tab in the function  args section (). if i want to just read i write
+
+```
+with open('test.txt', mode='r') as my_new_file:
+	contents = my_new_file.read()
+print(contents)
+```
+
+* if i set mode='w' and try to read() i get an error (non readable). the available modes are
+	* mode='r' read only
+	* mode='w' write only (ovewrite file  oe create new)
+	* mode='a' write only (append)
+	* mode='r+' read+write
+	* mode='w+' write + read (overwrite files or create new)
+
+```
+with open('test.txt', mode='a') as f:
+	f.write('Third Line')
+```
+
+* test solution
+
+```
+with open('test.txt', mode='w') as f:
+    f.write('Hello World')
+```
+
+* Links dor practice
+
+* [Basic Practice](http://codingbat.com/python)
+* [More Mathematical (and Harder) Practice](https://projecteuler.net/archive)
+* [List of Practice Problems](http://www.codeabbey.com/index/task_list)
+* [A SubReddit Devoted to Daily Practice Problems](https://www.reddit.com/r/dailyprogrammer)
+* [A very tricky website](http://www.pythonchallenge.com/)
+
+### Lecture 30 - Python objects and Data Struct Assesment Test Overview
+
+* we open Objects and Data Structures Assessment Test Jupiter Notebook from Course Repo
+*
