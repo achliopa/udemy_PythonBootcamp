@@ -275,4 +275,302 @@ with open('test.txt', mode='w') as f:
 ### Lecture 30 - Python objects and Data Struct Assesment Test Overview
 
 * we open Objects and Data Structures Assessment Test Jupiter Notebook from Course Repo
-*
+
+## Section 4 - Python Comparison Operators
+
+### Lecture 31 - Comparison Operators in Python
+
+* basic operators same as any language (see assesmet in previous section)
+* in strings capitalization counts
+* no typecasting between strings and nums in comparison `'2' != 2`
+* comparison between floats and integers? integer is treated a s float `2.0 == 2`
+* comparison operators can be chained priority left to right `1 < 3 > 2 is True` 
+
+### Lecture 32 - Chaining Comparison Operators in Python withg Logical Operators\
+
+* Logical operators, AND `and`, OR `or`, NOT `not` like any other language 
+* parentheses are not necessary. comparison operators take precendence over logical operators
+
+## Section 5 - Python Statements
+
+### Lecture 33 - If Elif and Else statements in Python
+
+* flow control with if, elif else
+* control flow sysntax makes use of colons and indentations (whitespace) no brackets
+
+```
+if some_condition:
+	# execute code
+elif some_other_condition:
+	# do sthing different
+else: 
+	# do something else
+```
+
+* we can have multiple elif
+
+### Lecture 34 - For Loops in Python
+
+* many objects in Python are iterable. we can iterate over every element in the object
+* tuples, sets, lists and strings are iterable
+* for loop is used to execute block of code for every iteration
+* syntax
+
+```
+my_iterable=[1,2,3]
+for item_name in my_iterable:
+	print(item_name)
+```
+
+* i can add control logic in the looped code
+* INDENTATION IS CRITCAL IN PYTHON
+* i can pass external vars in the loop by using them (e.g calculate sum)
+
+```
+list1 = [1,2,3,4,5,6,7,8,9,10]
+list_sum = 0 
+
+for num in list1:
+    list_sum = list_sum + num # or +=
+
+print(list_sum)
+```
+
+* if i dont intend to use a variable in the loop a common pattern in python is to name it _ (for _ in list:)
+* i can do tuple unpacking froma list using for loop to extract individual elements from tuples in a list
+
+```
+mylist = [(1,2),(3,4),(5,6),(7,8)]
+len(mylist)
+for (a,b) in mylist: #parenthesis is not necessary
+	print(a)
+	print(b)
+```
+
+* for loop can be used to iterate in a dictionary, but it iterates through the keys
+
+```
+d = {'k1':1,'k2':2,'k3':3}
+for item in d:
+	print(item)
+>> k1
+>> k2
+>> k3
+```
+
+* to get the items we need to iterate through the dictionary intems with d.item()
+
+```
+d = {'k1':1,'k2':2,'k3':3}
+for item in d.items():
+	print(item)
+>> ('k1',1)
+>> ('k2',2)
+>> ('k3',3)
+```
+
+* i can use typle unpacking to get the values back
+
+```
+d = {'k1':1,'k2':2,'k3':3}
+for key,value in d.items():
+	print(value)
+>> 1
+>> 2
+>> 3
+
+# or use 
+
+for value in d.values():
+	print(value)
+```
+
+* dictionaries are unordered. there is no guarantee i will get items in the order they are inserted
+
+### Lecture 35 - While Loops in Python
+
+* while loops will continue to execute a block of code while a condition is true
+* we can combine while with else so that an other block is executed while the opossite condition is true (else is executed only once!!!!!!!!!!!!!!!)
+* syntax:
+
+```
+while some_boolean_condition:
+	# do something
+else:
+	# do something different
+```
+
+* with while loop it is common to get into an infinite loop. we do KERNEL interrapt or restart notebook to stop it, or Ctr+C
+
+```
+x = 0
+while x < 5:
+	print(f'The current value of x is {x}'')
+	x+=1
+else:
+	print("X is not less than 5")
+>>> The current value of x is 0
+>>> The current value of x is 1
+>>> The current value of x is 2
+>>> The current value of x is 3
+>>> The current value of x is 4
+>>> X is not less than 5
+```
+
+* 3 keywords useful with loops *break* *continue* *pass*
+	* break: Breaks out of the current closest enclosing loop. (skip and exit)
+	* continue: Goes to the top of the closest enclosing loop. (skip)
+	* pass: Does nothing at all.
+* if i dont put anything after a loop control statement i get error , i can use pass instead
+
+```
+for item in x:
+	pass
+```
+### Lecture 36 - Useful Operators in Python
+
+*  range can be used in for loops as a literal list of numbers range(startval,endval,step) endval is exluded. range is a generator built in
+
+```
+for num in range(2,8,2):
+	print(num)
+>>> 2
+>>> 4
+>>> 6
+```
+
+* the operation below is so common we will use the enum function to make it simpler
+
+```
+index_count=0
+for letter in 'abcde':
+	print('At index {} the letter is {}'.format(index_count,letter))
+	index_count +=1
+>>> At index 0 the letter is a
+...
+```
+
+```
+index_count=0
+word='abcde'
+for letter in word:
+	print(word[index_count])
+	index_count +=1
+>>> a
+>>> b
+...
+```
+
+* with enumerate function things are simple, what we get back is tuples, i can use tuple unpacking to extract the info i want `for item,letter in eneumerate(word):`
+
+```
+word='abcde'
+for item in enumerate(word):
+	print(item)
+	index_count +=1
+>>> (0,'a')
+>>> (1,'b')
+...
+```
+
+* zip function is opposite of enumerate, it zips together multiple lists in a list of tuples. of course i can use unpacking on it
+
+```
+mylist1 = [1,2,3]
+mylist2 = ['a','b','c']
+for item in zip(mylist1,mylist2):
+	print(item)
+>>> (1,'a')
+>>> (2,'b')
+>>> (3,'c')
+```
+
+* i can see the list with `list(zip(mylist1,mylist2))`
+* the in operator checks if a value is in a list, string or dictionary
+
+```
+'x' in [1,2,3]
+False
+```
+
+```
+d={'mykey':345}
+345 in d.values()
+>>> True
+```
+
+* other operators is min,max
+
+```
+mylist = [1,2,3,4,5]
+min(mylist)
+>>> 1
+max(mylist)
+>>> 5
+```
+
+
+* random is a library with multiple functions in it. we see shuflle which scrambles any time we call it. randint(lowrange,highrange) returns a random int between the two vals
+
+```
+from random import shuffle
+mylist = [1,2,3,4,5,6]
+shuffle(mylist)
+>>> [3,1,6,2,4,5]
+```
+
+* we can capture user input by using input() to store input in a var. input considers anything we type as a string. we need to use casting
+
+```
+number = input('Enter a number here: ')
+>>> Enter a number here: 50
+result
+>>> '50'
+float(result)
+>>> 50.0
+```
+
+### Lecture 37 - List Comprehensions in Python
+
+* list comprehensions is a unique way of quickly creeating a list in Python
+* so no more .append() in a for loop
+
+```
+# novice way to convert a string to list
+mystring = 'Hello'
+mylist = []
+for letter in mystring:
+	mylist.append(letter)
+
+# one liner
+mylist =[letter for letter in mystring]
+```
+
+* this one liner flattens the for loop `mylist = [x for in 'hi there']`
+* we can use to make strings out of range `mylist = [x for x in range(0,100)]`
+* in this flattened syntax i can perform operations to the temp var i use in the for loop to mutate the elements prior to constructing the list e.g square them `mylist = [x**2 for x in range(0,100)]`
+* we can chain if statements to this flattened syntax e.g square only even nums `mylist = [x**2 for x in range(0,100) if x%2 == 0]`
+* we can even set literal math formulas to mutate the element putting them in parenthesis. `fahr = [((9/5)*x + 32) for x in celc]`
+* we can put if and else statement in a list comprehension although is ugly and unreadable. not recomended
+
+```
+results = [x if x%2== 0 else 'ODD' for x in range(0,11)]
+>>> [0, 'ODD',2,'ODD',4,'ODD,6,'ODD',8,'ODD',10]
+```
+
+* also we can put nested loops in list comprehension
+
+```
+# using typical for loop
+mylist = []
+for x in [2,4,6]:
+	for y in [1,10,100]:
+		mylist.append(x*y)
+
+# using list comprehension
+mylist = [x*y for x in [2,4,6] for y in [1,10,100]]
+```
+
+### Lecture 38 - Python Statements Test
+
+* 
