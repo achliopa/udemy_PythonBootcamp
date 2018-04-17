@@ -571,6 +571,94 @@ for x in [2,4,6]:
 mylist = [x*y for x in [2,4,6] for y in [1,10,100]]
 ```
 
-### Lecture 38 - Python Statements Test
+## Section 6 - Methods and Functions
 
-* 
+### Lecture 40 - Methods and the Pthon Documentation
+
+* built in objects in Python have various methods we can use
+* methods a re functions built-in objects
+* when we instatiate a builtin obeject type its methods are avaialable for use. for list we have seen .append() and .pop()
+* in jupyter notebook i can get a list of the avaiable methods by writing the variable name . and hitting tab (i get the attributes and methods of its data type or obect type)
+* after insrting the method name in jupyter tab i can hot shift+tab and get help for the method
+* in normal python to get the help in console i ban wrap it all in help() e.g help(mylist.insert)
+* the other option is to visit [python docs](https://docs.python.org/3/)
+
+### Lecture 41 - Functions in Python
+
+* functions like any other language (reusable and modular)
+* syntax (use indentation to define limits)
+* function name must be lowercase
+* functions can take params
+* we use the return keyword to send back result of the function 
+* return allows to assing the outtput of the function to a new var 
+```
+def function_name(param):
+	'''
+	Dockstring explains function
+	DOCKSTRING: Information about the function
+	INPUT: name
+	OUTPUT: Hello
+	'''
+	print("Hello "+param)
+	return 1
+# we call it
+>> ret = function_name('Sakis')
+>> Hello Sakis
+>> print(ret)
+>> 1
+```
+
+* if i just run the function name with out () python will console out info about it
+* geting info on function is the same as getting info for a method (shift+tab)
+* i can set default params to avoid runtime errors when i dont pass arguments. `def sy_hello(name='NAME`):
+* the result of a function that does not return anything is of NoneType
+* i can return if statements if i only care about the bollean result
+
+### Lecture 42 - Overview of Quick Function Exercises 
+
+* [solutions](https://docs.google.com/document/d/181AMuP-V5VnSorl_q7p6BYd8mwXWBnsZY_sSPA8trfc/edit)
+
+### Lecture 43 - `*args` and `**kwargs` in Python
+
+* `*args` stands for arguments and `**kwargs` for keyword arguments. both are special params in python functions
+* they are used to pass arbitrary number of params in a function
+* normally if i pass more than the specified params when i call a function it hrows an error. when i use `*args` python treats it a tuple of arbitrary size. then if i use it in my function as a tuple by calling it `args` then i cave dynamic params in the func
+
+```
+def myfunc(*args):
+	return sum(args) * 0.05
+```
+
+* what python does is it takes all the param i pass in and puts them in a tuple
+* i f i print the args in the function i get a tuple
+* i can use any other name instead of args the * is what does the job
+
+```
+def myfunc(*args):
+	for item in args:
+		print(item)
+```
+
+* `**kwargs` converts input params to a dictionary and treats input params as key value pairs. param name is the key and value is the value.
+
+```
+def myfunc(**kwargs):
+	if 'fruit' in kwargs:
+		print('My fruit choice is {}'.format(kwargs['fruit']))
+	else:
+		print('I did not find any fruit here')
+>> myfunc(fruit='apple', veggie='brocoli')
+>> 'My fruit choice is apple
+```
+
+* we can use them in combination 
+
+```
+def myfunc(*args,**kwargs):
+	print('I would like {} {}'.format(args[0],kwargs['food']))
+>> myfunc(10,20,30,fruit='orange',food='eggs')
+>> I would like 10 eggs
+```
+
+* python func distinguises args from kwargs , if they are named or unnamed params
+* order of definition of args, kwargs must be respected
