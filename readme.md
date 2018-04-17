@@ -662,3 +662,7 @@ def myfunc(*args,**kwargs):
 
 * python func distinguises args from kwargs , if they are named or unnamed params
 * order of definition of args, kwargs must be respected
+
+### Lecture 44 - Lamda Expressions, Map and Filter Functions
+
+*
