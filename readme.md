@@ -665,4 +665,39 @@ def myfunc(*args,**kwargs):
 
 ### Lecture 44 - Lamda Expressions, Map and Filter Functions
 
-*
+* lamda functions are anonymous functions we use one time and never reference them again
+* to understand their use we talk aboud map anf filter functions
+* map is a built in function. it takes a function and an iterable object. so it applies the function on each element of the iterable object
+
+```
+def square():
+	return num**2
+my_nums = [1,2,3,4,5]
+map(square,my_nums) # this creates it does not execute. i need to iterate
+for item in map(square,my_nums):
+	print(item)
+>> 1
+>> 4
+>> 9
+>> 16
+>> 25
+```
+
+* if i just want the list back `list(map(square,my_nums))`
+* functions are passed in map by their name not as func() as we dont want them executed right away but we pass the pointer to map to execute them latrer (JS callback style)
+* filter uses the same syntax as map filter(func,iterable) BUT. filter filters the iterable rturning only the elements that when passed in the function as arguments return True. so the function passed MUST return a boolean
+
+```
+def check_even(num):
+	return%2 == 0
+my_nums = [1,2,3,4,5,6]
+filter(check_even,my_nums) # this creates it does not execute. i need to iterate or transform to a list
+```
+
+* to understand lamda functions we transform a nurmal function into a lamda
+
+```
+def square(num):
+	result =  num**2
+	return result
+```
