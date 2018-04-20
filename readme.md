@@ -665,4 +665,201 @@ def myfunc(*args,**kwargs):
 
 ### Lecture 44 - Lamda Expressions, Map and Filter Functions
 
-*
+* lamda functions are anonymous functions we use one time and never reference them again
+* to understand their use we talk aboud map anf filter functions
+* map is a built in function. it takes a function and an iterable object. so it applies the function on each element of the iterable object
+
+```
+def square():
+	return num**2
+my_nums = [1,2,3,4,5]
+map(square,my_nums) # this creates it does not execute. i need to iterate
+for item in map(square,my_nums):
+	print(item)
+>> 1
+>> 4
+>> 9
+>> 16
+>> 25
+```
+* if i just want the list back `list(map(square,my_nums))`
+* functions are passed in map by their name not as func() as we dont want them executed right away but we pass the pointer to map to execute them latrer (JS callback style)
+* filter uses the same syntax as map filter(func,iterable) BUT. filter filters the iterable rturning only the elements that when passed in the function as arguments return True. so the function passed MUST return a boolean
+
+```
+def check_even(num):
+	return%2 == 0
+my_nums = [1,2,3,4,5,6]
+filter(check_even,my_nums) # this creates it does not execute. i need to iterate or transform to a list
+```
+
+* to understand lamda functions we transform a nurmal function into a lamda
+
+```
+def square(num):
+	result =  num**2
+	return result
+square(3)
+>> 9
+```
+* this is equivalent to 
+```
+def quare(num): return num ** 2
+```
+
+* or 
+
+```
+square = lambda num: num ** 2
+```
+
+* usually we dond assign lanbdas to vars but pass it in filter or map function in one time calls `list(map(lambda num: num **2, mynums)))`
+
+```
+names = ['Andy','Eve','Sally']
+list(map(lanbda name: name[0],names))
+>> ['A','E','S']
+# reverse names
+list(map(lanbda name: name[::-1],names))
+```
+
+### Nested Statements and Scope
+
+* when we create a variable name in python this is stored in what is called a namespace 
+* variable names have a scope
+
+```
+x = 25
+def printer():
+	x = 50
+	return x
+print(x)
+>> 25
+print(printer())
+>> 50
+```
+
+* vars defined in a function scope is the function itself
+* LEGB variable rule applies (Local, Enclosing Functional, Globals and Built-Ins)
+	* L: Local - Names assigned in a ny way within a function (def or lambda) and not declared global in that function
+	* E: Enclosing Function locals - Names in teh local scope of any and all enclosing functions (def or lambda) from inner to outer
+	* G: Global (module) - Nmaes assigned at the top-level of a module file or declared global in a def within the file
+	* BL Built-in (Python) - Names preassigned in the built-in names module: open, range, SyntaxError ...
+* LEGB rule is the order in which python will look for the vars
+
+* local example `lambda num:num**2`
+* enclosing function local example (after local and before global it searches in the enclosing function if there is one)
+```
+name = 'THIS IS A GLOBAL STRING'
+
+def greet():
+	name = 'Sammy'
+	def hello():
+		print('Hello'+name)
+	hello()
+greet()
+>> Hello Sammy
+```
+
+* setting a variable in a function as global changes its scope to global. but it takes effect only if ht efunction is called
+* avoid globals. pass them in the func and return them . its much cleaner and safer
+
+### Lecture 52 - Functions and Methods - Homework Assignemnt
+
+
+## Section 8 - Object Oriented Programming
+
+### Lecture 59 - OOP Introduction
+
+* with OOP we can create our own objects that have methods and attributes
+* after defining a list or string (object instantiation) we are able to call their methods with .mathod() syntax 
+* theseuse info about the object or the object itself to return results or change the current object e.g append() to a list or count occurences of an element in a tuple
+* syntax example:
+```
+class NameOfClass():
+	def __init__(self,param1,param2):
+		self.param1 = param1
+		self.param2 = param2
+	def some_method(self):
+		# perform some action
+		print(self.param1)
+```
+* a class is defined with class keyword and the name (typical camelcase) with parentheses
+* then we have the contrstructor (__init__) method called when we make an instance of an object, self refers to the object instance itself (like this in JS). typically in a constructor we pass in external params that we attach to the object instance
+* by passin in the method the self obejct we let python know the method is connectecd to the class.
+
+### Lecture 60 - OOP: Attributes and Class Keyword
+
+* by seting a variable name `mylist = [1,2,3]` i create an object literal of that type. the fact that is an object is proven if he hit shift+tab in jupiter after `mylist.` and get all the atributes and methods avaialble because of its class(aka type)
+
+* we create an empty class, instantiate an object out of it and check the object's type with the built in type() method. it is of Sample type
+
+```
+class Sample():
+	pass
+my_sample = Sample()
+type(my_sample)
+>> __main__.Sample
+```
+
+* in the constructor i pass the params and i can assing to self. they become attributes i can call later. if i define attrributes as constructor params andd dont pass them i get an error
+
+```
+class Dog():
+	def __init__(self,breed,name,spots):
+		self.bree = breed
+		self.name = name
+		self.spots = spots
+my_dog = Dog(breed='Lab',name='Sammy',spots=False)
+my_dog.breed
+>> 'Lab'
+my_dog.name
+>> 'Sammy'
+my_dog.spots
+>> False
+```
+
+### Lecture 61 - OOP: Class Object Attributes and Methods
+
+*  in previous lecture we saw how a number of params can passed when creating a object instance from a class and be assigned as attributes of the object
+* there are attributes common for all objects. these are class attributes same for every object instance . they are defined above the init method. for these we dont assign them to the self keyword as this refers to the object instance
+
+```
+class Dog():
+	# CLASS OBJECT ATTRIBUTE
+	species = 'mammal'
+	my_dog = Dog(breed='Lab',name='Sammy',spots=False)
+	...
+```
+
+* no need to pass it. i can get it with `my_dog.species`
+* methods are function defined in the class that typically operate on object instance data. they are put after the init function and they are passed the self (object instance ref) to access it attributes and methods
+
+```
+...
+	def __init__(self,breed,name,spots):
+		self.bree = breed
+		self.name = name
+		self.spots = spots
+	# Operactions/Actions --> Methods
+	def bark(self):
+		print("WOOF! My name is {}".format(self.name))
+...
+my_dog.bark()
+>> 'WOOF! My name is Sammy'
+```
+
+* attributes we call them without () methods arre functions so to execute we need the ()
+* methods can take external params that are passed whenb they get called, they are passed by their name no self. needed. if not passed when called python throws error
+
+```
+...
+def bark(self,number):
+...
+```
+
+```
+class Circle():
+	# CLASS OBJECT ATTRIBUTE
+	pi = 3.14
+```
