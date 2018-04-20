@@ -682,6 +682,7 @@ for item in map(square,my_nums):
 >> 16
 >> 25
 ```
+
 * if i just want the list back `list(map(square,my_nums))`
 * functions are passed in map by their name not as func() as we dont want them executed right away but we pass the pointer to map to execute them latrer (JS callback style)
 * filter uses the same syntax as map filter(func,iterable) BUT. filter filters the iterable rturning only the elements that when passed in the function as arguments return True. so the function passed MUST return a boolean
