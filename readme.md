@@ -858,9 +858,266 @@ my_dog.bark()
 def bark(self,number):
 ...
 ```
+* we write a new class to wrap up
 
 ```
 class Circle():
 	# CLASS OBJECT ATTRIBUTE
 	pi = 3.14
+	# constructor with one param defaulting to 1 to avoid runtimes
+	def __init__(self,radius=1):
+		self.radius = radius
+		self.area  = radius*radius*Circle.pi
+
+	# METHOD
+	def get_cicumference(self):
+		retun 2*pi*self.radius
+
+my_circle = Circle()
 ```
+
+* my_circel has pi.radius and get_circumference and area
+* better call class attributes as Class.attribute and not just attribute
+
+### Lecture 62 - OOP: Inheritance and Polymorphism
+
+* inheritance is to define new classes using existing classes
+* we create a sample class that will serve as base/parnet class to show inheritance
+
+```
+class Animal():
+	def __init__(self):
+		print("ANIMAL CREATED")
+	def who_am_i(self):
+		print("I am an animal")
+	def eat(self):
+		print("Iam eating")
+myanimal = Animal()
+>> ANIMAL CREATED	
+myanimal.eat()
+>> Iam eating
+```
+
+* i will create now dog class (derived class) inheriting or extending the animal class to inherit its methods and attibutes
+
+```
+class Dog(Animal):
+	def __init__(self):
+		Animal.__init__(self)
+		print("Dog Created")
+	def who_am_i(self):
+		print("I am a dog!")
+	def bark(self):
+		print("Woof")
+mydog = Dog()
+>> ANIMAL CREATED
+>> Dog Created
+mydog.who_am_i()
+>> I am a dog
+mydog.eat()
+>> I am eating
+mydog.bark()
+>> Woof
+```
+
+* to extend a base class i pass its name in the definition of the chiled class `def Child(Parent):`
+* also int he contructor of the child i have to call the construnctor f the parent passing the object instance reference
+* all methods and attributes are inherited to the child
+* if i want to overrite a method i simply rewrite it using the same name
+
+* Polymorphism refers to the way that different object classes can share the same method name. and these mathods can be called from the same place even thogh different object might be passed in (?!?!)
+
+* example
+
+```
+# Dog Class
+class Dog():
+	def __init__(self,name):
+		self.name = name
+	def speak(self):
+		return self.name + " says woof!"
+
+# Cat Class
+class Cat():
+	def __init__(self,name):
+		self.name = name
+	def speak(self):
+		return self.name + " says meow!"
+
+niko = Dog("niko")
+felix = Cat("felix")
+print(niko.speak())
+>> niko says woof!
+print(felix.speak())
+>> felix says meow!
+```
+
+* both dog class and cat class have the speak method, when called each obejts speak method returns the result that is unique to the object class. also their names are unique to the object instance(passed as params at creation)
+* an exampl of polymorphism is demonstrated in a for loop. i can write common code using both of them as they share common output and commonly named methods
+
+```
+for pet in [niko,felix]:
+	print(typpe(pet))
+	print(pet.speak())
+>> <class '__main__.Dog'>
+>> niko says woof!
+>> <class '__main__.Cat'>
+>> felix says meow!
+```
+
+* or through a function. python does not care about the class we will pass (after all they all derive from the same root built-in class) as long as both have the method .speak
+
+```
+def pet_speak(pet):
+	print(pet.speak())
+pet_speak(niko)
+>> niko says woof!
+pet_speak(felix)
+>> felix says meow!
+```
+
+* A more concrete way of polymorphism is performed using Abstract classes and inheritance
+* an abstract class is one that never expects to be instantiated rather than inherited/extended
+
+```
+class Animal():
+	def __init__(self,name):
+		self.name = name
+	def speak(self):
+		raise NotImplementedError("Subclass must implement this abstract method")
+myanimal = Animal("fred")
+myanimal.speak()
+>> ERROR..		
+```
+
+* we see that Animal although intented to be used as abstract cannot prevent it from being instationated. however when we implement abstract class methods we throw an error when called as we are not supposed to call mehtods of the abstract class. the reason for abstract methods is to form a blueprint an interface. they are meant to be overwritten by children
+
+### Lecture 63 - OOP: Special(Magic/Dunder) Methods
+
+* special methods allow us to use some built-in operations in python
+
+```
+mylist = [1,2,3]
+len(mylist)
+>>3
+
+class Sample():
+	pass
+
+mysample = Sample()
+len(mysample)
+>> ERROR
+print(mysample)
+>> <__main__.Sample object at >
+print(mylist)
+[1,2,3]
+```
+
+* so i see that imy class does not inherit python built in methods where python build in classes (or datatypes) do. this is where special or magic or dunder (because they start with __ ) come to place, __init__ is such as special method:
+
+```
+class Book():
+	def __init__(self,title,author,pages):
+		self.author = author
+		self.title = title
+		seld.pages = pages
+b = Book('Python Rocks', 'Jose',200)
+print(b)
+>> <__main__.Book object at >
+```
+
+* print asks for the string representation of b. i get the same result if i cast b into string
+
+```
+str(b)
+>> <__main__.Book object at >
+```
+
+* if i overwrite the special method __str__ in Book i can overcome this issue
+
+```
+class Book():
+	def __init__(self,title,author,pages):
+		self.author = author
+		self.title = title
+		seld.pages = pages
+	def __str__(self)
+		return f'{self.title} by {self.author}'
+b = Book('Python Rocks', 'Jose',200)
+print(b)
+>> Python Rocks by Jose
+str(b)
+>> Python Rocks by Jose
+```
+
+* i can do the same for length len()
+
+```
+def __len__(self):
+	return self.pages
+```
+
+* i can delete an object with the built in del `del b`
+* we can overwrite this method as well. overwriting does not remove the default behaviour of deleting though its just enhances it... (how? no call to parent inside...)
+
+```
+def __del__(self):
+	print('A book object has been dleted')
+```
+
+## Section 9 - Modules and Packages
+
+### Lecture 68 - Pip install and PyPI
+
+* PyPI is a repository for open-source 3rd party Python packages. like RubyGems, NPM for node.js
+* so far we have used only libs that come with Python (standard libs)
+* there are much more libs on PyPI
+* we can use `pip install` at the command line to install these packages
+* with python or anaconda python install we have pip. pip is a cli tool
+* firewall might block pip
+* in my project folder I write `pip install <package>`. seems that packages are globally available (python lloks if we have already the packlage)
+* so we installl them and use them in python (check documentation)
+
+```
+pip install colorama
+python
+>>> from colorama import init
+>>> init()
+>>> from colorama import Fore
+>>> print(FOore.RED + "some red text")
+```
+
+* how to search: google "python package for "=> usually =ownload link takes us to PyPI
+
+```
+pip install openpyxl
+python
+>>> import openpyxl
+```
+
+### Lecture 69 - Modules and Packages
+
+* now we will learn how to write our own modules and packages
+* modules  are .py scripts that we call in another .py script
+* packages are a collection of .py scripts (but there is a special __init__.py script that needs to be in the folder along with the rest of the scripts to let python know that these .py scripts should be treated as a package )
+* in a text editor i create a mymodule.py file and a myprogram.py that will call the module
+* in mypmodule I write
+
+```
+def myfunc():
+	print("Hey I am in mymodule.py")
+```
+
+* in myprogram i import the function from module and call it
+
+```
+from mymodule import myfunc
+
+myfunc()
+```
+
+* in the folder of the files i run `python myprogram.py` and get `Hey I am in mymodule.py ` printed in console
+* with modules under our belt lets go to packages. we create a MyMainPackage folder in the project dir and in it a SubPackage folder
+* we need to tell python to treat these folders as packages. to do so in each package folder (main and sub) i add an __init__.py file
+* we dont have to write anything in the file
+* in the package and subpackage folder we add a script with a dummy function
