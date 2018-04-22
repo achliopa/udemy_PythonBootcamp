@@ -767,6 +767,11 @@ greet()
 
 ### Lecture 52 - Functions and Methods - Homework Assignemnt
 
+## Section 7 - Milestone Project - 1
+
+### Lecture 54 - First Python Milestone Project Overview
+
+* TicTacToe Game for 2 players
 
 ## Section 8 - Object Oriented Programming
 
@@ -1120,4 +1125,281 @@ myfunc()
 * with modules under our belt lets go to packages. we create a MyMainPackage folder in the project dir and in it a SubPackage folder
 * we need to tell python to treat these folders as packages. to do so in each package folder (main and sub) i add an __init__.py file
 * we dont have to write anything in the file
-* in the package and subpackage folder we add a script with a dummy function
+* in the package and subpackage folder we add a script file/module with a dummy function
+* in my main program the waty to import modules from packages is `from <Package> import <module>` or `from <Package>.<SubPackage> import <module>` . after importing i can call the module or script (we refer to the .py files in the package folder) function with `<module>.<function>()`
+
+```
+from MyMainPackage.SubPackage import mysubscript
+mysubscript.sub_report()
+```
+
+### Lecture 70 - __name__ and "__main__"
+
+* we stuble upon the follwing LoC in python scripts
+
+```
+if __name__ == "__main__":
+	<block of code>
+```
+
+* sometimes when we are importing from a module we would like to know whether a modules function is being used as an import, or if we are using the  original .py file of that module
+* to see this in action in a folder we add two .py files (one.py, two.py)
+* when we run a .py script from command line what happen is
+	* all code with no indentation gets run. there is no main function like other languages
+* in python there is a built-in var called *__name__*. this var gets assigned a string depending how we run the script
+	* if i run a script directly `python <script>.py` python will assign to this var the "__main__" string
+* so we can add an if statement `if __name__ == "__main__":` to check if a script is being run directly
+* so how it is used is that functions are defined above thsi if statement and only functions we want to run when we call this are added below this if statement (import many run few)
+
+* we test it by implementing two files the imported and the importer
+* imported
+
+```
+def func():
+	print("FUNC() IN ONE.PY")
+
+print("TOP LEVEL IN ONE")
+
+if __name__ == '__main__':
+	print('ONE.PY is beign run directly!')
+else:
+	print('ONE.PY has been imported!')
+```
+
+* importer
+
+```
+import one
+
+print('TOP LEVEL IN TWO.PY')
+
+one.func()
+
+if __name__ == '__main__':
+	print('TWO.PY is beign run directly!')
+else:
+	print('TWO.PY has been imported!')
+```
+
+* first test
+
+```
+python one.py
+>>> TOP LEVEL IN ONE
+>>> ONE.PY is beign run directly!
+```
+
+* second test
+
+```
+python two.py
+>>> TOP LEVEL IN ONE
+>>> ONE.PY has been imported!
+>>> TOP LEVEL IN TWO.PY
+>>> FUNC() IN ONE.PY
+>>> TWO.PY is beign run directly!
+```
+
+* so when we import a module it gets run (top level) without __name__=="__main__"
+
+## Section 10 - Errors and Exceptions Handling
+
+### Lecture 71 - Errors and Exception handling
+
+* we use error handling to plan for possible errors, let the script continue with the other code 
+* unhandled errors stop the program
+* we use 3 keywords for error handling:
+	* try: This is the block of code to be attempted (may lead to an error)
+	* except: block of code will execute if there is an error in the try block
+	* finally: a final block of code to be executed regardless of an error
+
+```
+def add(n1,n2):
+	print(n1+n2)
+add(20,10)
+>>> 30
+number1 = 20
+number2 = input("Please enter a num: ")
+add(number1,number2)
+print("Sthing happened")
+>>> ERROR: number2 is a string # print is never reached and not called
+```
+
+* error handling in action. we can add else: statemnt to except: for when things go ok
+
+```
+try:
+	# WANT TO ATTEMPT THIS CODE
+	# MAY HAVE AN ERROR
+	result = 10+10
+except:
+	print("Hey it looks like you aren't adding correctly!")
+else:
+	print("Add went well!")
+	print(result)
+```
+
+* try,except and finally in action (we can except by type of error)
+
+```
+try:
+	f = open('testfile','w')
+	f.write("Write a test line")
+except TypeError: 
+	print("There was a type error!")
+except OSError:
+	print("Hey you have an OS Error")
+except:
+	print("All other exceptions")
+finally:
+	print("I always run")
+```
+
+* puting try/except in a while loop to get imput correclty
+
+```
+while True:
+	try:
+		result = int(input("Plese provide number: "))
+	except:
+		print("Whoops! That is not a number")
+		continue
+	else:
+		print("Yes thank you")
+		break
+	finally:
+		print("End of try/except/finally")
+		print("I will always run at the end")
+```
+
+### Lecture 72 - Errors and Exceptions Homework
+
+* 
+
+### Lecture 74 - Pylint Overview
+
+* as our projects grow its important to have unit tests in place
+* as we change our code we run the test to make sure previous code is ok
+* testing tools:
+	* pylint: this is a library that looks at our code and reports back possible issues
+	* unittest: this built-in lib will allow us to test our own programs and check we are getting desired output
+* PyLint enfores PEP8 python set of style convention
+* we install it with `pip install pylint`
+* we create a py script file with a simple error
+
+```
+a = 1
+b = 2
+print(a)
+print(B)
+```
+* we run pylint on it `pylint simple1.py` and get a report in console
+
+```
+No config file found, using default configuration
+************* Module simple1
+C:  4, 0: Final newline missing (missing-final-newline)
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  1, 0: Constant name "a" doesn't conform to UPPER_CASE naming style (invalid-name)
+C:  2, 0: Constant name "b" doesn't conform to UPPER_CASE naming style (invalid-name)
+E:  4, 6: Undefined variable 'B' (undefined-variable)
+
+-------------------------------------
+Your code has been rated at -12.50/10
+```
+
+* for a full report i have to use the -r flag `pylint -r y simple1.py`
+
+```
+"""Example Google style docstrings.
+"""
+A = 1
+B = 2
+print(A)
+print(B)
+
+```
+
+* 10/10
+
+```
+No config file found, using default configuration
+
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 7.50/10, +2.50)
+
+```
+
+### Lecture 75 - Running Tests with the Unittest Library
+
+* to learn unittest we will create 2 script files. one that capitalizes strings (cap.py) and one that tests the first script using unittest lib (test_cap.py) 
+* unittesting is done in a test class.
+* we first implement our module to be tested (cap.py) containing a simple function that capitalizes text using the string.capitalize() method
+* then we implement the test module (test_cap.py)
+	* we impoer unittest library
+	* we import the module to test (cap)
+	* we create a class (TestCap) that extends the uniittest.TestCase class
+	* in it we define our tests as methods. we add 2 tests/methods. one to test single word and one to test pultiword text.
+	* the tests are structured. a) we set the method under test expected param. b) we call the method and get the result `result = cap.cap_text(text)`
+	* we check if the result is what we want with parent class (TestCase) assertEqual method
+	* we run the methods witht eh ifmain check and running unittest.main()
+
+```
+import unittest
+import cap
+
+class TestCap(unittest.TestCase):
+
+	def test_one_word(self):
+		text = 'python'
+		result = cap.cap_text(text)
+		self.assertEqual(result,'Python')
+
+	def test_multiple_words(self):
+		text = 'monty python'
+		result = cap.cap_text(text)
+		self.assertEqual(result,'Monty Python')
+
+if __name__ == '__main__':
+	unittest.main()
+```
+
+* we run the test with `python test_cap.py` and get the test result
+
+```
+  File "test_cap.py", line 11
+    def test_multiple_words(self)
+                                ^
+SyntaxError: invalid syntax
+achliopa@achliopa-ThinkPad-T530 ~/workspace/udemy/python/myFolder/Section10/unittest $ python test_cap.py 
+F.
+======================================================================
+FAIL: test_multiple_words (__main__.TestCap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_cap.py", line 14, in test_multiple_words
+    self.assertEqual(result,'Monty Python')
+AssertionError: 'Monty python' != 'Monty Python'
+- Monty python
+?       ^
++ Monty Python
+?       ^
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+FAILED (failures=1)
+
+```
+
+* seems the capitalize() method does not word on multi word texts . we change it to the more relevant string.title() method and rerun. SUCCESS
+
+```
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+
+```
