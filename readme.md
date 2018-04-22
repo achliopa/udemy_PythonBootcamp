@@ -773,6 +773,8 @@ greet()
 
 * TicTacToe Game for 2 players
 
+### Lecture 58 - Advanced Solution
+
 ## Section 8 - Object Oriented Programming
 
 ### Lecture 59 - OOP Introduction
@@ -1069,6 +1071,10 @@ def __len__(self):
 def __del__(self):
 	print('A book object has been dleted')
 ```
+
+### Lecture 64 - OOP: Homework
+
+### Lecture 66 - OOP: Challenge
 
 ## Section 9 - Modules and Packages
 
@@ -1403,3 +1409,13 @@ Ran 2 tests in 0.000s
 OK
 
 ```
+
+## Section 11 - Milestone Project - 2
+
+### Lecture 76 - Milestone Project 2 Overview
+
+* Use OOP to create a blackjack project in python
+* computer dealer and human player
+* we create with anormal deck of cards represented in python
+* player places a bet -> dealer starts with 1 card face up and one face down / player starts with 2 cards face up -> player goal get closer to a value of 21 than the dealer. possible player actions: hit (get another card) staty (stop receiving cards) -> after player turn: if player is over 21 is burned , if he is under 21 dealer hits untill it beats the player or gets burned, player bust money to dealer, player win/dealer bust money to player
+* face values (J,K,Q) counta s 10, aces count1 or 11 whichever value is preferable to player
