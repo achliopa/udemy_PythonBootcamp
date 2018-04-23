@@ -1419,3 +1419,216 @@ OK
 * we create with anormal deck of cards represented in python
 * player places a bet -> dealer starts with 1 card face up and one face down / player starts with 2 cards face up -> player goal get closer to a value of 21 than the dealer. possible player actions: hit (get another card) staty (stop receiving cards) -> after player turn: if player is over 21 is burned , if he is under 21 dealer hits untill it beats the player or gets burned, player bust money to dealer, player win/dealer bust money to player
 * face values (J,K,Q) counta s 10, aces count1 or 11 whichever value is preferable to player
+
+## Section 12 - Python Declarators
+
+### Lecture 81 - Decorators with Python Overview
+
+* decorators allow us to decorate a function
+* imagine a simple func
+* say we want to add new logic to the function
+* we have 2 options: add the extra code into the old function (i cannot call the old function), create a new function that contains the old code and add new code there (code duplication)
+* what if we want to remove the extra functionality one day.
+*  an on/off switch to add/remove extra functionality would be optimal
+* decorators offer that. the use the @ operator and are placed on top of the original function. it is pretty abstract. we will build a decorator to see it in action
+
+```
+def hello():
+	return "Hello!"
+hello()
+>>> "Hello!"
+hello
+>>> <function __main__.hello>
+greet = hello
+greet()
+>>> "Hello!"
+del hello
+hello()
+>> ERROR
+greet()
+>>> "Hello!"
+```
+
+* so copying a func name makes a new copy of the function is not just a pointer. i can use that to return functions from inside other functions. this is useful to overcome the scope limitetion of function emclosed functions
+
+```
+def heelo(name='Jose'):
+	print('The hello() function has been executed!')
+
+	def greet():
+		return '\t This is the greet() func inside hello!'
+	def welcome():
+		return '\t This is the welcome() func inside hello!'
+
+	print("I am going to return a function!")
+
+	if name == 'Jose':
+		return greet
+	else:
+		return welcome
+my_new_func = hello('Jose')
+>>> The hello() function has been executed!
+>>> I am going to return a function!
+my_new_func
+>>> <function __main__.hello.<locals>.greet>
+print(my_new_func())
+>>>		This is the greet() func inside hello!
+```
+
+* we see that my_new_funct points to the greet fucntion inside hello
+* we will use this concept in decorators. instead of exporting (returning the function we import it, pass it as a aparameter. we define a function that gets another function as an arguemnt and executes it. we call it passing in an existing function and see it executed. NOTE we pass in raw function not with ()
+
+```
+def hello():
+	return 'Hi Jose!'
+
+def other(some_def_fuc):
+	print("Other code runs here!")
+	print(some_other_func())
+
+other(hello)
+>>> Other code runs here!
+>>> Hi Jose!
+```
+
+* decorator (we implement both import and export) we get a function wrap it up and send the wrapped function
+
+```
+def new_decorator(original_func):
+
+	def wrap_func():
+		
+		print("Some extra code, before the originam function")
+
+		original_func()
+
+		print("Some extra code, after the original function")
+
+	return wrap_func
+
+def func_needs_decorator():
+	print("I want to be decorated")
+
+decorated_func = new_decorator(func_needs_decorator)
+decorated_func()
+>>> Some extra code, before the originam function
+>>> I want to be decorated
+>>> Some extra code, after the original function
+```
+
+* instead of the traditional way of wrapping and executing i can use the operator decorator and execute the wrapped func. if i remove the operator i dont have wrapping.
+
+```
+@new_decorator
+def func_needs_decorator():
+	print("I want to be decorated")
+
+func_needs_decorator()
+>>> Some extra code, before the originam function
+>>> I want to be decorated
+>>> Some extra code, after the original function
+```
+
+## Section 13 - Python Generators
+
+### Lecture 83 - Generators with Python
+
+* we ve learned how to create function with def and return statement
+* generator functions allow us to write a func that can send back a value and later pick up where it left off
+* generator func let us generate sequence of nums over time
+* the difference in syntax is the yield statement
+* generateor func when compiled becomes an object that supports an iteration protocol
+* when they are called they dont just return a value and exit
+* generator functions automatically suspend and resume execution and state at last point of val generation
+* instead of having to compute an entire series of values upfront genrator computes one val and waits untill next val is called for
+* e.g the range() func does not produce a list in memory for all the vals. it keeps track of the last number and the step size to provide a flow of nums. if i indeed need a list i need to cast the range to a list.
+
+```
+def create_cubes(n):
+	result = []
+	for x in range(n):
+		result.append(x**3)
+	return result
+create_cubes[10]
+>>> [1,8,27,64,125,216,343,512,729]
+```
+
+* in previous example i want the whole list so the code makes sense. but if i want to iterate through the results, there is no reason to store the complete list upfront. generators  come into play. i need prev value and the formula
+
+```
+for x in create)cubes(10):
+	print(x)
+>>> 0
+>>> 1
+>>> 8
+>>> 27
+>>> 64
+>>> 125
+>>> 216
+>>> 343
+>>> 512
+>>> 729
+```
+
+* using yield has the same result like before. but i cannot just call the func i need to use it in a loop. it is much more mem efficient
+
+```
+def create_cubes(n):
+	for x in range(n):
+		yield x**3
+```
+
+* if i just call `create_cubes(10)` i get `<generator object create_cubes at )x00004324>` to get the list i need to cast it to a list `list(create_cubes(10))`
+
+* this concept is good for math series
+
+```
+def gen_fibon(n):
+	a = 1
+	b = 1
+	for i in range(n):
+		yield a
+		a,b = b,a+b # tuple matching , avoid reassign a,b while they are worked with
+for number in gen_fibon(10)
+	print(number)
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+```
+
+* i can apply built in methods on generators like next()
+
+```
+def simple_gen():
+	for x in range(3):
+		yield x
+g = simple_gen()
+next(g)
+>> 0
+next(g)
+>> 1
+next(g)
+>> 2
+next(g)
+>> EROOR StopInteration # For loop catches this error and stops lopp
+```
+
+* iter() lets us iterate in a normal object
+
+```
+s = "Hello"
+next(s)
+>>> ERROR not an iterator
+s_iter = iter(s)
+next(s_iter)
+H
+```
+
+* generators support comprehension like list comprehension
