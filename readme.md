@@ -1632,3 +1632,266 @@ H
 ```
 
 * generators support comprehension like list comprehension
+
+## Section 15 - Advanced Python Modules
+
+### Lecture 87 - Collections Module - counter
+
+* built-in that implements specialized container datatypes
+* Counter is a dictionary subclass that helps count hashable objects
+
+```
+# Counter
+from collections import Counter
+l = [1,1,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5]
+Counter(l)
+>>> Counter({1: 6, 2: 4, 3: 4, 4: 4, 5: 2})
+```
+
+* as we see if we pass in a list, it creates a counter object wrapping a dictionary  with key value pairs. the keys are the list elements and the values the num of occurences of the elements in the list. this can work on strings
+
+```
+s = 'wterwtsfgtrewuioyteoiuygkhvdskjhfggjhkloituvdnjd'
+Counter(s)
+>>> Counter({'d': 3,
+         'e': 3,
+         'f': 2,
+         'g': 4,
+         'h': 3,
+         'i': 3,
+         'j': 3,
+         'k': 3,
+         'l': 1,
+         'n': 1,
+         'o': 3,
+         'r': 2,
+         's': 2,
+         't': 5,
+         'u': 3,
+         'v': 2,
+         'w': 3,
+         'y': 2})
+```
+
+* we can also count word occurences in a sentence. the drill is obvious. apply string.split() to make an array of substrings (words and apply counter on it)
+* Counter supports a number of methods `Counter.most_common(how_many_from_top)` returns the top scorers in tuples
+* .sum(Counter.values()) gives the total values of occurences. (original list length) so we can derive metrics from it.
+* we can cast the Counter to the standard datatypes
+
+### Lecture 88 - Collections Module - defaultdict
+
+* is a dicitionary like object providing all its methods and takes the first argument as the default datatype. defaultdict will never raise a KeyError. any key that does not exist, gets the value freom the defualt factory
+
+```
+from collections import defaultdict
+d = {'k1':1}
+d['k1']
+>> 1
+d['k2']
+>> KeyError
+# with defaultdict
+d = defaultdict(object)
+d['one']
+>>> <object at 0x434344>
+for item in d:
+	print item
+>> one
+# its added
+```
+
+* in the prev example i set the defaultkey to the object type. so whenever i ask for a nonexisting key it gets created with the default type (object) and a reference to it is returned
+* i can use defaultdict to assign default vals
+
+```
+d = defaultdict(lambda: 0)
+d['one']
+>> 0
+# i alwys can assign my pref val as standard dict
+d['two'] = 2
+d
+>> defaultdict(<function <lambda> at 0x43453>, {'two': 2, 'one': 0})
+```
+
+### Lecture 89 Collections Module - OrderedDict
+
+* an OrderedDict is a dictioanry subclass that remembers the order in which its contents are added. a standard dict is an unordered collection
+
+```
+# normal dict
+d = {}
+d['a']=1
+d['b']=2
+d['c']=3
+d
+>> {'a':1,'b':2,'c':3}
+for k,v in d.items():
+	print k,v
+>> a 1
+>> c 3
+>> b 2 # no order
+
+# OrderedDict
+from collections import OrderedDict
+d = OrderedDict()
+d['a']=1
+d['b']=2
+d['c']=3
+for k,v in d.items():
+	print k,v
+>> a 1
+>> b 2
+>> c 3 # order is retained
+```
+
+* boolean expressions on dictionaries return True regardless of orrder. in ordered ones return False unless order is same
+
+### Lecture 90 - Collections Module - namedtuple
+
+* tuples are ordered 
+
+```
+t = (1,2,3)
+t[0]
+>> 1
+```
+
+* a named tuple assigns names apart from the indices to the tuple elements
+* namedtuple creation is like a standard class creation. the tupleinstances i create with this datatype are like constarined  objects from a class object. the named tuple ahas the 2 basic tuple methods
+
+```
+from collections import namedtuple
+Dog = namedtuple('Dog', 'age breed name')
+sam = Dog(age=2,breed='Lab',name='Sammy')
+sam
+>> Dog(age=2,breed='Lab',name='Sammy')
+sam.age
+>> 2
+sam[0]
+>> 2
+```
+
+### Lecture 91 - Datetime
+
+* module to handle dates in python
+* we go through the time attribute
+
+```
+import datetime
+t = datetime.time(5,25,1) # time takes (hours,minutes,seconds,microsecond,timezone info)
+print t
+>> 05:25:01
+t.hours
+>> 5
+print datetime.time.min
+00:00:00
+print datetime.time.max
+23:59:59.999999
+print datetime.time.resolution
+00:00:00.000001
+```
+
+* now we go to the date attribute
+
+```
+today = datetime.date.today()
+print today
+>> 2018-04-24
+today.timetuple() # like a named tuple
+>> time.struct_time(tm_year=2018,tm_mon=04 etc)
+datetime.date.min
+>> datetime.date(1,1,1)
+print datetime.date.min
+1-1-1
+print datetime.date.max
+>> 9999-12-31
+print datetime.date.resolution
+1 day, 0:00:00
+```
+
+* i can create dates replacing attributes of an existing date
+* aalso i can do math on them
+
+```
+d1 = datetime.date(2018,4,16) (year,month,day)
+d2 = d1.replace(year=1990)
+print d2
+>> 1990-04-16
+```
+
+```
+d1-d2
+datetime.timedelta(9131) # days diff
+```
+
+### Lecture 92 - Python Debugger - pdb
+
+* intreoduces interactive debugger module
+
+```
+import pdb
+x = [1,3,4]
+y = 2
+z = 3
+
+result = y + z
+print result
+>> 5
+pdb.set_trace()
+result2 = y+x
+print result2
+>> TypeError
+```
+
+with pdb we set traces `pdb.set_trace()` (breakpoints)
+* When i run the program and it passes the breakpoint it enters the pdb and i get console line (pdb cli) toenter pdb commands
+* interacting with the pdb debugger, q for quit
+
+```
+(Pdb) x
+[1,3,4]
+(Pdb) y
+2
+(Pdb)x+z
+TypeError
+q
+```
+
+### Lecture 93 - Timeing our code -timeit
+
+* profiling, performance metrics 
+* jupyter notebook supports special methods `%timeit` for this module
+
+```
+import timeit
+# want to time different methods to create the string '0-1-2-3-4...99'
+"-".join(str(n) for n in range(100))
+>> '0-1-2-3-4...99'
+timeit.timeit(' "-".join(str(n) for n in range(100)) ',number=10000)
+0.247889
+```
+
+* what i did is i passed my code a s a sting to the timeit method and entered a number=10000 that is i want to run it 10000 times to get my metrics. what i get is the time it took to execute
+* i run it as list comprehension and get faster time
+
+```
+timeit.timeit(' "-".join([str(n) for n in range(100)]) ',number=10000)
+0.217889
+```
+
+* i use the map function which is the fastest
+
+```
+timeit.timeit(' "-".join(map(str,range(100))) ',number=10000)
+0.1554765476
+```
+
+* in jupyter i use jupyters buil-in magic aka the % symbol, jupyter reduces the number of loops the more time our code consumes to run
+
+```
+%timeit "-".join(map(str,range(100)))
+10000 loops, best of 3: 15.5 μs per loop
+```
+
+### Lecture 94 - Regular Expressions -re
+
+* 
