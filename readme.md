@@ -1894,4 +1894,168 @@ timeit.timeit(' "-".join(map(str,range(100))) ',number=10000)
 
 ### Lecture 94 - Regular Expressions -re
 
-* 
+* text matching patterns, described with formal syntax.
+* they are used for finding repetition,matching text etc
+* a lot of parsing problems can be solved with regex
+* we use the "re" module
+* searching for patterns in text
+
+```
+import re
+re.search('hello','hello world!')
+>> <_sre.SRE_Match at 0x41d5648>
+```
+
+* se.search(term,text) swearches for a term in text and returns a Match object, if nothing is found, None is returned
+
+```
+import se
+patterns = ['term1','term2']
+text = 'This is a string wi th term1, but not the other term'
+for pattern in patterns:
+    print('Searching for "%s" in:\n "%s"\n' %(pattern,text))
+    
+    #Check for match
+    if re.search(pattern,text):
+        print('Match was found. \n')
+    else:
+        print('No Match was found.\n')
+>>
+>>
+match.re.search(patterns[0],text)
+type(match)
+>> _sre.SRE_Match
+match.start()
+>> 22
+```
+
+* we will look deeper in the *_sre.SRE_Match* object. it contains various methods. start() returns the index of first occurence in the string , end() the last match index
+* we can split with regex, the example below is like normal split (nothing fancy)
+
+```
+split_term = '@'
+phrase  = 'What iis your email, is it hello@gmail.com?'
+re.split(split_term,phrase)
+>> ['What is your email, is it hello', 'gmail.com?']
+```
+
+* we can find all occurencies with findall
+
+```
+re.findall('match','Here is one match, here is another match')
+>> ['match','match']
+```
+
+* NOw we dive into normal Regex syntax
+* repetition syntax
+	* `'sd*'` s followed by 0 to n d's
+	* `'sd+'` s followed by 1 to n d's
+	* `'sd?'` s followed by 0 to 1 d's
+	* `'sd{3}'` s followed by 3 d's
+	* `'sd{2,3}'` s followed by 2 to 3 d's
+* character sets (match anyone of a group of chars at a point in the input). we use brackets
+	* `'[sd]'` match either s or d
+	* `'s[sd]+'` match s   followed by 1 to n  s or d
+* exclusion: use ^ to exclude terms by insering it to the brackewt syntax notation
+	* `'[^...]'` match any char not in the brackets
+	* `'[^!.? ]+'` match any char not in the !.! group 1 or more (find the words)
+* character ranges: contiguous chars with - start-end
+	* `'[a-z]+'` sequences of lower case letters
+	* `'[A-Z]+'` sequences of upper case letters
+	* `'[a-zA-Z]+'` sequences of lower or upper case letters
+	* `'[A-Z][a-a]+'` sequences of lower upper case letters folowed by lower case letters
+* escape codes
+	* `r'\d+'` sequence of a digit
+	* `r'\D+'` sequence of a non-digit
+	* `r'\s+'` sequence of whitespace
+	* `r'\S+'` sequence of non-0withespace
+	* `r'\w+'` sequence of alphanumeric
+	* `r'\W+'` sequence of non-alphanumeric
+
+### Lecture 95 - StringIO
+
+* StringIO module implements an in-memory file like object.  it can be used as input-output to most funcs that would expect a standard file object
+
+```
+import StringIO
+f = StringIO.StringIO('this is a normal string')
+f.read() # cursor moved to ewnd by write
+''
+f.write('second line')
+f.seek(0)
+f.read()
+```
+
+* we can perfoirm normal file operations
+* cStringIO() method is faster, impleemtned in C
+
+## Section 16 - Advanced Python Objects and Data Structures
+
+### Lecture 97 - Advanced Numbers
+
+* different representations
+	* Hex `hex(246) => '0xf6'` returns string
+	* Binary `bin(1234) => '0b10011010010'` returns string
+* built in methods.
+	* pow = power `pow(2,4) => 16` third argument is mod % of result
+	* abs = absolute val `abs(-3) => 3`
+	* round `round(4.6) => 5.0` returns float. rounded num decimals are defined with a second arguemnt
+
+### Lecture 98 - Advanced Strings
+
+* different methods supported as built in to String class
+
+```
+s = 'hello world'
+s.capitalize()
+>> 'Hello world'
+s.upper()
+>> 'HELLO WORLD'
+s.lower()
+>> 'hello world'
+s.title()
+>> 'Hello World'
+s.count('o') # count occurences of char
+>> 2
+s.find('o') # index of first occurence
+>> 4
+```
+
+* formating methods - weird
+
+```
+s.center(20,'z') # center string and add padding of given char(s) to a total length of 20
+>> 'zzzzhello worldzzzzz'
+```
+
+```
+print 'hello\thi'
+>> hello   hi
+print 'hello\thi'.expandtabs()
+>> hello   hi
+```
+
+* .isalnum() checks if all chars in a string are alphanumeric
+* .isalpha() checks if all chars in a string are alphabetic
+* .islower() checks if all chars in a string are  lower case
+* .isspace() checks if all chars in a string are  whitespace
+* .istitle() checks if all words in a string are capitalized
+* .endswith('o') checks if last char is string is 'o'
+
+* certain methods emulate regex functionality like .split()
+
+```
+s = 'hello'
+s.split('e') # it seperates at every occurence
+['h','llo']
+```
+
+* .partition() is like split() splits at first occurence and includes thje split char in the string array
+
+```
+s = 'weereeeeetrtt'
+s.partition('e')
+>> ['w','e','ereeeeetrtt']
+```
+
+### Advanced Sets
