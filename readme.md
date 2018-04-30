@@ -2058,4 +2058,71 @@ s.partition('e')
 >> ['w','e','ereeeeetrtt']
 ```
 
-### Advanced Sets
+### Lecture 99 - Advanced Sets
+
+```
+s = set()
+s.add(1)
+s.add(2)
+s
+>> {1,2}
+s.add(2)
+s
+{1,2} # sets do not accept duplicates
+```
+
+* .clear() clears all elemetns from the set
+* .copy() makes a copy of the set `sc = s.copy()`. changes done to the original do not affect the copy
+* .difference() returns a set containign the elements that are different between 2 sets `set1.difference(set2)`
+* .difference_update() removes the elemetns found to be same between 2 sets from the 1st set. `set1.difference_update(set2)`
+set1
+* .discard() removes an element from a set `s.discard(2)`
+* .intersection() returns the intersection of 2 sets as a new set (common elements between 2 sets) `set1.intersection(set2)`
+* .intersection_update() updates the first set to contain only common eleemtns with second set `set1.intersection_update(set2)`
+* .isdisjoint() return true if 2 sets have no eleemtns in common, otherwise returns false `set1.isdisjoint(set2)`
+* `s1.issubset(s2)` returns true if s1 is subset of s2
+* `s1.issuperset(s2)` returns true if s1 is superset of s2
+* `s1.symmetric_difference(s2)` returns the elements that exist in only one of the sets
+* `s1.symmetric_difference_update(s2)` method updates s1 to contain the elemetns that exist in only one of the sets
+* `s1.union(s2)` returs the union of the two sets (all elements that are in either set)
+* `s1.update(s2` updates s1 to contain the union of the 2 sets
+
+### Lecture 100 - Advanced Dictionaries
+
+```
+d = {'k1':1,'k2':2}
+```
+
+* dictionaries have their own comprehensions like lists
+
+```
+{x:x**2 for x in range (10)}
+>> {0: 0, 1: 1, 2: 4, 3: 9, 4:16  ... 9: 81}
+```
+
+* if we want to set string keys we can do it with zio
+
+```
+{k:v**2 for k,v in zip(['a','b'], range (2))} # use tuple unpacking
+>> {'a': 0, 'b': 1}
+```
+
+```
+for k in d.itervalues(): # or iteritems() or interkeys()
+	print k
+>> 1
+>> 2
+```
+
+### Lecture 101 - Advanced Lists
+
+* `list.append(value)` appends a value to a list
+* `list.count(value)` counts value occurences in list
+* `list1.apend(list2)` apeends nested list 2 in list1
+* `list1.extend(list2)` appends list2 elemetns to list1
+* `list.index(eleemnt)` returns index of element (eeror if eleemtn not found)
+* `list.insert(index,value)` inseerts value at specified index position int he list
+* `list.pop(index)` pops out the value at index position. if index not sepcs returns last one
+* `list.remove(value)` removes the first occurenc of the value in the list
+* `list.reverse()` reverses thelist
+* `list.sort()` sorts the list
