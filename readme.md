@@ -1420,6 +1420,69 @@ OK
 * player places a bet -> dealer starts with 1 card face up and one face down / player starts with 2 cards face up -> player goal get closer to a value of 21 than the dealer. possible player actions: hit (get another card) staty (stop receiving cards) -> after player turn: if player is over 21 is burned , if he is under 21 dealer hits untill it beats the player or gets burned, player bust money to dealer, player win/dealer bust money to player
 * face values (J,K,Q) counta s 10, aces count1 or 11 whichever value is preferable to player
 
+### Lecture 77 - Solution Walkthrough - Card and Deck classes
+
+* we import the random module and set the globals
+
+```
+import random
+
+suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
+ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
+values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 'Nine':9, 'Ten':10, 'Jack':10, 'Queen':10, 'King':10, 'Ace':11}
+
+playing = True
+```
+
+* we create a card class (constructor and serializer)
+
+```
+class Card():
+
+    def __init__(self,suit,rank):
+        self.suit = suit
+        self.rank = rank
+        
+    def __str__(self):
+        return self.rank + ' of ' + self.suit
+```
+
+* we create a Deck card
+
+```
+class Deck():
+    
+    def __init__(self):
+        self.deck = []  # start with an empty list
+        for suit in suits:
+            for rank in ranks:
+                self.deck.append(Card(suit,rank))  # build Card objects and add them to the list
+    
+    def __str__(self):
+        deck_comp = ''  # start with an empty string
+        for card in self.deck:
+            deck_comp += '\n '+card.__str__() # add each Card object's print string
+        return 'The deck has:' + deck_comp
+
+    def shuffle(self):
+        random.shuffle(self.deck)
+        
+    def deal(self):
+        single_card = self.deck.pop()
+        return single_card
+```
+
+* test deck
+
+```
+test_deck = Deck()
+print(test_deck)
+```
+
+### Lecture 78 - Solution Walkthrough - Hand and Chip Classes
+
+*
+
 ## Section 12 - Python Declarators
 
 ### Lecture 81 - Decorators with Python Overview
@@ -2126,3 +2189,212 @@ for k in d.itervalues(): # or iteritems() or interkeys()
 * `list.remove(value)` removes the first occurenc of the value in the list
 * `list.reverse()` reverses thelist
 * `list.sort()` sorts the list
+
+## Section 17 - Bonus Material - Introduction to GUIs
+
+### Lecture 104 - Introduction  to GUIs
+
+* [common GUI frameworks](https://wiki.python.org/moin/GUI%20Programming%20in%20Python)
+* [full GUI programming list](https://wiki.python.org/moin/GuiProgramming)
+* we will use Widgets in Jupyter Notebook. this is good for dashboareds for business/data analysis
+* jpywidgets switched to bootstrap [jpywidgets](https://ipywidgets.readthedocs.io/en/latest/examples/Widget%20Styling.html#Predefined-styles)
+
+### Lecture 106 - Interact Functionality with GUIs
+
+* we can build simple graphical user interfaces (GUI) with jupyter
+* to use widgets in jypyter we need to import libraries
+```
+from  ipywidgets import interact,interactive, fixed
+import ipywidgets as widgets
+```
+* we implement a basic function for our first widget
+```
+def func(x):
+	return x
+```
+* we create a slider witn interact passing in the function and a default value
+```
+interact(func,x=10)
+```
+* the function determines the output value of the slider
+* if i pass a boolean as default i get a checkbox `interact(func,x=True)` that is checked by default and returns true, by interacting i toggle the output between true/false
+* if I pass a string as a second argument int eh interact function ai get a text field. whatever i type is outputed
+* we will now use a decorator to wrap a function in the interact method. what I get is 2 UI elements a checkbox and a slider
+```
+@interact(x=True,y=1.0)
+def g(x,y):
+	return (x,y)
+```
+* if i want to fix a parameter to a certain value and disable it interact element i can use fixed method in the inetract arguments
+```
+@interact(x=True,y=fixed(1.0))
+def g(x,y):
+	return (x,y)
+```
+* if we look closer to the integer slider we see that its range is determined by the value we pass as second param. with min = -x and max = 3x
+* we can parametrize that with widgets.Intslider() for ints bassing a kward (key value pairs) for the predefined params. `interact(func,x=widgets.IntSlider(min=-100,max=100,step=1,value=0))`
+* there is a shorthand version for this `interact(func,x=(-100,100,1))`
+* we can add this parametrization to the decorator
+```
+@interact(x=(0.0,20.0,0.5))
+def h(x=5.0):
+	return x**0.5
+```
+* if we pass in interact a list of strings as default val it will createa drop down list
+* we can pass also a dictionary . it creates a dropdown list. we select the key and the output is the val
+* jypyter widgets provide the interactive method. this method allows us to reuse widgets that are already produces or access the data bound to the UI controls
+* in contrast with interact the output value is not dispalyed automatically. we can display it in a function using IPython.display
+* we need to import display form IPython.display
+```
+from IPython.display import display
+
+def f(a,b):
+	display(a+b)
+	return a+b
+w = interactive(f,a=10,b=20)
+```
+
+* w is reusable. it has a type of `ipywidgets.widgets.interaction.interactive` and contains the widgets as its children. we can display it calling `display(w)` . we can get the current values of its input with `w.kwargs` as a dictionary and the output with `w.result`
+
+```
+type(w)
+>> ipywidgets.widgets.interaction.interactive
+w.children
+>> (IntSlider(value=10, description='a', max=30, min=-10),
+ IntSlider(value=20, description='b', max=60, min=-20),
+ Output())
+display(w)
+>> widget on screen
+```
+
+### Lecture 107 - GUI Widget Basics
+
+* we will build upon prior knowledge
+* we import widgets
+```
+import ipywidgets as widgets
+```
+* widgets have lots of methods and attributes
+* if i call `widgets.IntSlider()` i get a slider onscreen with predefined default vals 
+* if i dont want to  display the widget directly but later on when i want to i store it to a var an later use display(var)
+
+```
+import ipywidgets as widgets
+w = widgets.IntSlider()
+from IPython.display import display
+display(w)
+```
+
+* if i rediplay the same widget variable any interaction to one affects the other as they are the same thing (python is pass by reference language)
+* to close the widget we write `w.close()`
+* the var w (widget) has a number of attrigutes and methods. `w.value` gives the current val of the slider (not updatable)
+* widgets have *keys* or stateful properties. properties connected tot he state of the display change the display programmaticaly
+* we can connect multiple widgets using jslink (javascript link). the connection is doen between keys which we represent as strings in tuples (first element is the widget). the link is done after display
+
+```
+a = widgets.FloatText()
+b = widgets.FloatSlider()
+display(a,b)
+mylink = widgets.jslink((a,'value'),(b,'value'))
+```
+
+* i can break the link with .unlink() `mylink.unlink()`
+
+### Lecture 108 - List of Possible Widgets
+
+* notebook contains the complete list. to view it run the script in jupyter
+
+```
+import ipywidgets as widgets
+
+# Show all available widgets!
+for item in widgets.Widget.widget_types.items():
+    print(item[0][2][:-5])
+```
+
+* IntSlider (we've seen) properties list
+
+```
+widgets.IntSlider(
+    value=7,
+    min=0,
+    max=10,
+    step=1,
+    description='Test:',
+    disabled=False,
+    continuous_update=False,
+    orientation='horizontal',
+    readout=True,
+    readout_format='d'
+)
+```
+
+* FloatSlider has same properties (vals have decimals, format is '.1f')
+* sliders can be displayed verticaly
+* IntRangeSlider and FLoatRangeSlider support range (same params just value is passed as array of 2)
+* IntProgress is like a progress bar (is from bootstrap)
+* BoundedFloatText BoundedFloatText +. numerical text boxes with limits
+* ToggleButton, Chackbox
+* Selection Widgets => Dropdown, RadioButtons Select etc
+* toggle buttons, select multiple
+* HTML => enter HTMl
+* Image (show image)
+
+### Lecture 109 - Widget Styling and Layouts
+
+* how to style widgets (we use html,css terms)
+* .layout. gives a big list of css properties
+
+```
+import ipywidgets as widgets
+from IPython.display import display
+w = widgets.IntSlider()
+w.layout.margin = 'auto'
+w.layout.height = '75px'
+```
+
+* layout can be copied between widgets
+* `widgets.Button(description=`Ordinary Button',button_style='danger')
+* layout exposes layout CSS properties for top level elements
+* style exposes non layout related attributes (custom colors)
+```
+b1 = widgets.Button(description='Custom Color')
+b1.style.button_color = 'lightgreen'
+```
+
+* b1.style.keys returns all stuyles to be edited (varies per widget). styles can be copied
+
+### Lecture 110 - Example of what a Widget can do
+
+* we will create acustom widget (we will need external libraries)
+* we will explore the LOrenz sustem of diff equations
+* `%matplotlib inline`  allows us to view the visualizations in  the jupyter notebook
+* we import methods from IPython.display and widgets
+
+```
+from ipywidgets import interact, interactive
+from IPYthon.display import creal_output, display, HTML
+```
+
+* we import tools from external librarties, matplotlib is for plotting
+
+```
+import numpy as np
+from scipy import integrate
+
+from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.colors import cnames
+from matplotlib import animation
+```
+
+* we implement the lorenz equation passing the required params
+	* it creates a figure
+	* sets the limits of the figure
+	* computes the time derivative
+	* select random starting point
+	* solve the equation
+	* choose colors for lines
+	* plots everything
+* we call interactive on the func tweaking the imput params 
+* we make histograms
