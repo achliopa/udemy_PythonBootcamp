@@ -1422,7 +1422,8 @@ OK
 
 ### Lecture 77 - Solution Walkthrough - Card and Deck classes
 
-* we import the random module and set the globals
+* we import the random module and set the globals and a boolean to control the loops
+* values is a dictionary, suits and rank a tuple
 
 ```
 import random
@@ -1434,7 +1435,7 @@ values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
 playing = True
 ```
 
-* we create a card class (constructor and serializer)
+* we create a card class (constructor and serializer) w/ 2 params suit and rank
 
 ```
 class Card():
@@ -1447,7 +1448,7 @@ class Card():
         return self.rank + ' of ' + self.suit
 ```
 
-* we create a Deck card
+* we create a Deck class with a list of Card class instances
 
 ```
 class Deck():
@@ -1476,13 +1477,233 @@ class Deck():
 
 ```
 test_deck = Deck()
+test_deck.shuffle()
 print(test_deck)
 ```
 
 ### Lecture 78 - Solution Walkthrough - Hand and Chip Classes
 
-*
+* we create a Hand class. the Hand class represents which cards are at ones hands. it starts with an empty list of Cards and the list grows with add_card function
+* the hand has a total value of the hands cards values. also the number of aces plays a role (to set ti 1 or 11)
+```
+class Hand:
+    def __init__(self):
+        self.cards = []  # start with an empty list as we did in the Deck class
+        self.value = 0   # start with zero value
+        self.aces = 0    # add an attribute to keep track of aces
+    
+    def add_card(self,card):
+    	# card passed in
+    	# from Deck.deal() --> single Card(suit,rank)
+        self.cards.append(card)
+        self.value += values[card.rank]
+    
+    def adjust_for_ace(self):
+        pass
+```
+* testing it
+```
+test_deck = Deck()
+test_deck.shuffle()
+# Player
+test_player = Hand()
+# Deal 1 card from the deck
+pulled_card = test_deck.deal()
+print(pulled_card)
+test_player.add_card(pulled_card)
+print(test_player.value)
+```
+* we tackle the issue with aces. in add card we track the number of aces
+```
+class Hand:
+    
+    def __init__(self):
+        self.cards = []  # start with an empty list as we did in the Deck class
+        self.value = 0   # start with zero value
+        self.aces = 0    # add an attribute to keep track of aces
+    
+    def add_card(self,card):
+        self.cards.append(card)
+        self.value += values[card.rank]
+        if card.rank == 'Ace':
+            self.aces += 1  # add to self.aces
+    
+    def adjust_for_ace(self):
+        while self.value > 21 and self.aces:
+            self.value -= 10
+            self.aces -= 1 
+```
+* we create the chips class counting the money or chips
+```
+class Chips:
+    
+    def __init__(self,total=1000):
+        self.total = total  # This can be set to a default value or supplied by a user input
+        self.bet = 0
+        
+    def win_bet(self):
+        self.total += self.bet
+    
+    def lose_bet(self):
+        self.total -= self.bet
+```
 
+### Lecture 79 - Functions for Game Play
+
+* we write the function to take bets
+```
+def take_bet(chips):
+    
+    while True:
+        try:
+            chips.bet = int(input('How many chips would you like to bet? '))
+        except ValueError:
+            print('Sorry, a bet must be an integer!')
+        else:
+            if chips.bet > chips.total:
+                print("Sorry, your bet can't exceed",chips.total)
+            else:
+                break
+```
+* we write a function for taking hits
+```
+def hit(deck,hand):
+    
+    hand.add_card(deck.deal())
+    hand.adjust_for_ace()
+```
+* after every hit we ask to hit or stand
+```
+def hit_or_stand(deck,hand):
+    global playing  # to control an upcoming while loop
+    
+    while True:
+        x = input("Would you like to Hit or Stand? Enter 'h' or 's' ")
+        
+        if x[0].lower() == 'h':
+            hit(deck,hand)  # hit() function defined above
+
+        elif x[0].lower() == 's':
+            print("Player stands. Dealer is playing.")
+            playing = False
+
+        else:
+            print("Sorry, please try again.")
+            continue
+        break
+```
+* we write a set of outcome helper function
+```
+def player_busts(player,dealer,chips):
+    print("Player busts!")
+    chips.lose_bet()
+
+def player_wins(player,dealer,chips):
+    print("Player wins!")
+    chips.win_bet()
+
+def dealer_busts(player,dealer,chips):
+    print("Dealer busts!")
+    chips.win_bet()
+    
+def dealer_wins(player,dealer,chips):
+    print("Dealer wins!")
+    chips.lose_bet()
+    
+def push(player,dealer):
+    print("Dealer and Player tie! It's a push.")
+```
+* and more helper functions
+```
+def show_some(player,dealer):
+    print("\nDealer's Hand:")
+    print(" <card hidden>")
+    print('',dealer.cards[1])  
+    print("\nPlayer's Hand:", *player.cards, sep='\n ')
+    
+def show_all(player,dealer):
+    print("\nDealer's Hand:", *dealer.cards, sep='\n ')
+    print("Dealer's Hand =",dealer.value)
+    print("\nPlayer's Hand:", *player.cards, sep='\n ')
+    print("Player's Hand =",player.value)
+```
+* and the main game control function
+```
+while True:
+    # Print an opening statement
+    print('Welcome to BlackJack! Get as close to 21 as you can without going over!\n\
+    Dealer hits until she reaches 17. Aces count as 1 or 11.')
+    
+    # Create & shuffle the deck, deal two cards to each player
+    deck = Deck()
+    deck.shuffle()
+    
+    player_hand = Hand()
+    player_hand.add_card(deck.deal())
+    player_hand.add_card(deck.deal())
+    
+    dealer_hand = Hand()
+    dealer_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+            
+    # Set up the Player's chips
+    player_chips = Chips()  # remember the default value is 100    
+    
+    # Prompt the Player for their bet
+    take_bet(player_chips)
+    
+    # Show cards (but keep one dealer card hidden)
+    show_some(player_hand,dealer_hand)
+    
+    while playing:  # recall this variable from our hit_or_stand function
+        
+        # Prompt for Player to Hit or Stand
+        hit_or_stand(deck,player_hand) 
+        
+        # Show cards (but keep one dealer card hidden)
+        show_some(player_hand,dealer_hand)  
+        
+        # If player's hand exceeds 21, run player_busts() and break out of loop
+        if player_hand.value > 21:
+            player_busts(player_hand,dealer_hand,player_chips)
+            break        
+
+
+    # If Player hasn't busted, play Dealer's hand until Dealer reaches 17 
+    if player_hand.value <= 21:
+        
+        while dealer_hand.value < 17:
+            hit(deck,dealer_hand)    
+    
+        # Show all cards
+        show_all(player_hand,dealer_hand)
+        
+        # Run different winning scenarios
+        if dealer_hand.value > 21:
+            dealer_busts(player_hand,dealer_hand,player_chips)
+
+        elif dealer_hand.value > player_hand.value:
+            dealer_wins(player_hand,dealer_hand,player_chips)
+
+        elif dealer_hand.value < player_hand.value:
+            player_wins(player_hand,dealer_hand,player_chips)
+
+        else:
+            push(player_hand,dealer_hand)        
+    
+    # Inform Player of their chips total 
+    print("\nPlayer's winnings stand at",player_chips.total)
+    
+    # Ask to play again
+    new_game = input("Would you like to play another hand? Enter 'y' or 'n' ")
+    
+    if new_game[0].lower()=='y':
+        playing=True
+        continue
+    else:
+        print("Thanks for playing!")
+        break
+```
 ## Section 12 - Python Declarators
 
 ### Lecture 81 - Decorators with Python Overview
